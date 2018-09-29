@@ -1,0 +1,107 @@
+<template>
+  <loading wx:if="{{!wifiList.length}}">加载中...</loading>
+  <view class="index">
+   <view wx:if="{{wifiList.length}}" class="wifi-list">
+     <view wx:for="{{wifiList}}" wx:key="{{index}}" wx:for-item="wifi" class="wifi-item">
+       <view class="wifi-name">wifi: {{wifi.SSID}}</view>
+       <view class="wifi-name">信号：{{wifi.signalStrength}}</view>
+     </view>
+   </view> 
+ </view>
+</template>
+
+<script>
+var app = getApp()
+const {  fly, regeneratorRuntime } = app.global
+import { wifiStatusCode } from '../../config' 
+
+// 能不能使用
+Page({
+	async onLoad(){
+    // 监听用户网络的变化
+    this.obverNetworkChange()
+    // 这里的执行顺序需要再次 async await 规定
+    let startWifiCode = await this.startWifi()
+    if(0 === startWifiCode){ // 成功
+      this.setData({
+        isSupport: true
+      })
+      let newworkType = await this.getCurrentNetworkType()
+      if('wifi' === newworkType){
+        this.setData({
+          isWifi: true
+        })
+        const wifiList = await this.getWifiList()
+      }
+    }
+  },
+  data: {
+    isSupport: false,
+    isWifi: false,
+    wifiList: []
+  },
+  async getCurrentNetworkType(){
+  	const typeRes = await wx.getNetworkTypeAsync()
+  	if(typeRes.networkType){
+  		return typeRes.networkType
+  	}else{
+  		wx.showToast({
+  			icon: 'none',
+  			title: '获取网络状态失败，请稍后重试~'
+  		})
+  	}
+  },
+  // 这个async await只能保证当前函数 startRes()中的执行顺序
+  async startWifi(){
+  	const startRes = await wx.startWifiAsync({
+      fail: (err) => {
+        wx.showToast({
+          icon: 'none',
+          title: '初始化wifi失败，请稍后重试~'
+        })
+      }
+    })
+    if(startRes){
+      return startRes.errCode
+    }
+
+  },
+  async getWifiList(){
+    const wifiList = await wx.getWifiListAsync({
+      success: () => {
+        wx.onGetWifiList((res) => {
+          console.log(res)
+          this.setData({
+            wifiList: res.wifiList
+          })
+        })
+      },
+      fail: (err) => {
+        wx.showToast({
+          icon: 'none',
+          title: '获取附近wifi失败，请稍后重试~'
+        })
+      }
+    })
+    console.log(wifiList)
+    if(wifiList){
+      return wifiList
+    }
+  },
+  obverNetworkChange(){
+    wx.onNetworkStatusChange((res) => {
+      console.log(res)
+      console.log('当前网络变化...'+res.networkType)
+      if('wifi' == res.networkType){
+        // 初始化wifi模块
+        this.getWifiList()
+      }
+    })
+  }
+})
+</script>
+
+<style lang="less">
+@import 'style/base.less';
+
+</style>

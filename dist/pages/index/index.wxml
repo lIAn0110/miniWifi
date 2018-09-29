@@ -1,0 +1,10 @@
+
+ <loading wx:if="{{!wifiList.length}}">加载中...</loading>
+ <view class="index">
+  <view wx:if="{{wifiList.length}}" class="wifi-list">
+    <view wx:for="{{wifiList}}" wx:key="{{index}}" wx:for-item="wifi" class="wifi-item">
+      <view class="wifi-name">wifi: {{wifi.SSID}}</view>
+      <view class="wifi-name">信号：{{wifi.signalStrength}}</view>
+    </view>
+  </view> 
+</view>

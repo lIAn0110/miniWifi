@@ -1,0 +1,106 @@
+// 可以在此定义一些全局公共的变量
+@color-main: #087b46;
+@color-secondary: #f4b509;
+
+// 默认的背景色
+@color-bg: #f0f0f0;
+
+@color-333: #333;
+@color-666: #666;
+@color-999: #999;
+
+// 移动端1px问题  使用when做一个判断，调用时更方便。
+.border-1px(@color: #ddd, @pos: bottom, @style: solid) when (@pos = bottom){
+	// 父元素
+	position: relative;
+	// 子元素（伪元素）
+	&::after{
+		display: block;
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		width: 100%;
+		// 因为伪元素
+		border-top: 1px @style @color;
+		content: '';
+		transform: scaleY(0.5);
+	}
+}
+.border-1px(@color: #ddd, @pos: bottom) when (@pos = top){
+	// 父元素
+	position: relative;
+	// 子元素（伪元素）
+	&::before{
+		display: block;
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		border-top: 1px solid @color;
+		content: '';
+		transform: scaleY(0.5);
+	}
+}
+.border-1px(@color: #ddd, @pos: bottom) when (@pos = left){
+	// 父元素
+	position: relative;
+	// 子元素（伪元素）
+	&::before{
+		display: block;
+		position: absolute;
+		left: 0;
+		top: 0;
+		// width: 100%;
+		height: 100%;
+		border-left: 1px solid @color;
+		content: '';
+		transform: scaleX(0.5);
+	}
+}
+.border-1px(@color: #ddd, @pos: bottom) when (@pos = right){
+	// 父元素
+	position: relative;
+	// 子元素（伪元素）
+	&::after{
+		display: block;
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		height: 100%;
+		border-right: 1px solid @color;
+		content: '';
+		transform: scaleX(0.5);
+	}
+}
+
+// 添加一个设置圆角的
+.border-1px(@color: #ddd, @pos: bottom, @radius: 0rpx) when (@pos = all){
+	// 父元素
+	position: relative;
+	// 把前面设置的伪元素的样式覆盖掉了
+	&::after{
+		display: block;
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		border: 1px solid @color;
+		box-sizing: border-box;
+		width: 200%;
+		height: 200%;
+		border-radius: @radius*2;
+		transform: scale(0.5);
+		transform-origin: left top;
+	}
+}
+// 媒体查询，不晓得有没有得用
+@media (-webkit-min-device-pixel-ratio: 1.5),(min-device-pixel-ratio: 1.5){
+	.border-1px::after{
+		transform: scaleY(0.7);
+	}
+}
+@media (-webkit-min-device-pixel-ratio: 2),(min-device-pixel-ratio: 2){
+	.border-1px::after{
+		transform: scaleY(0.5);
+	}
+}

@@ -1,0 +1,24 @@
+<template>
+	<view class="rec">rec</view>
+</template>
+
+
+<script>
+Page({
+	data: {
+
+	},
+	navigatorTo(e){
+		let url = e.currentTarget.dataset.url
+		wx.navigateTo({
+			url: url
+		})
+	},
+})
+</script>
+
+<style lang="less">
+@import 'style/base.less';
+
+
+</style>

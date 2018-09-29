@@ -1,0 +1,83 @@
+<template>
+	<view class="index">index</view>
+</template>
+
+<script>
+var app = getApp()
+const {  fly, regeneratorRuntime } = app.global
+import { wifiStatusCode } from '../../config' 
+
+// 能不能使用
+Page({
+	async onLoad(){
+		const info = await wx.getSystemInfoAsync()
+		console.log(info)
+  	// 判断系统是否支持
+  	if(this.systemIsSupport(info.system)){
+  		this.setData({
+  			isSupport: true
+  		})
+  		this.startWifi()
+  		// 获取当前的网络状态
+  		if('wifi' === this.getCurrentNetworkType()){
+  			this.setData({
+  				isWifi: true
+  			})
+  		}
+  	}
+  },
+  data: {
+  	isSupport: false,
+  	isWifi: false
+  },
+  systemIsSupport(system){
+  	// 1. 判断是安卓还是iso
+  	if('iOS' === this.currentSystem(system)){
+  		let version = parseInt(system.split(' ')[1].split('.')[0])
+  		// 2. 判断系统版本是否支持
+  		return version>9 ? true : false
+  	}else{
+  		return version>4 ? true : false
+  	}
+  },
+  currentSystem(system){
+  	return system.indexOf('iOS')>-1 ? 'iOS' : 'Android'
+  },
+  async getCurrentNetworkType(){
+  	// 根据当前的网络状态，判断是否打开wifi
+  	const typeRes = await wx.getNetworkTypeAsync()
+  	if(typeRes.networkType){
+  		return typeRes.networkType
+  	}else{
+  		wx.showToast({
+  			icon: 'none',
+  			title: '获取网络状态失败，请稍后重试~'
+  		})
+  	}
+  },
+  initWifi(){
+
+  },
+  startWifi(){
+  	wx.startWifi({
+  		success: (res) => {
+  			if(res.){
+
+  			}
+  		},
+  		fail: (err) => {
+  			console.log(err)
+  			wx.showToast({
+  				icon: 'none',
+  				title: '初始化wifi失败，请稍后重试~'
+  			})
+  		}
+  	})
+  }
+})
+</script>
+
+<style lang="less">
+@import 'style/base.less';
+
+</style>

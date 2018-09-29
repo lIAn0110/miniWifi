@@ -1,0 +1,32 @@
+// 全局的样式 ==> app.wxss
+/* reset */
+page {
+	background-color: #fff;
+	height: 100%;
+	font-size: 32rpx;
+	line-height: 1.6;
+}
+form{
+	width: 100%;
+}
+/* 隐藏scroll-view的滚动条 */
+::-webkit-scrollbar{
+  width: 0;
+  height: 0;
+  color: transparent;
+}
+
+
+/* page */
+.container{
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	font-size: 32rpx;
+	font-family: -apple-system-font,Helvetica Neue,Helvetica,sans-serif;
+}
+
+button::after{
+	border: none;
+}
+
